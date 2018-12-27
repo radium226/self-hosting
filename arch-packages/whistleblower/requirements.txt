@@ -1,0 +1,4 @@
+pydbus
+python-telegram-bot
+pygobject
+deepmerge

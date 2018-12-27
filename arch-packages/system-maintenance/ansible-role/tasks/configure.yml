@@ -1,4 +1,10 @@
 ---
+- name: create config folder
+  file:
+    path: "/etc/system-maintenance"
+    state: directory
+    owner: "system-maintenance"
+
 - name: copy vault password
   copy:
     content: |

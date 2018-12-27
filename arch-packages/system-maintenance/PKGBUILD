@@ -1,4 +1,4 @@
-pkgname="system-maintenance"
+pkgname="${NAME}"
 pkgver="${VERSION}"
 pkgrel="1"
 arch=("any")
@@ -10,6 +10,7 @@ prepare()
 
 depends=(
   "python-toml"
+  #FIXME "python-deepmerge"
 )
 
 makedepends=(

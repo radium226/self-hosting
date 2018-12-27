@@ -1,0 +1,53 @@
+pkgname="${NAME}"
+pkgver="${VERSION}"
+pkgrel="1"
+arch=("any")
+
+prepare()
+{
+  :
+}
+
+depends=(
+  "python-toml"
+)
+
+depends=(
+  "python-toml"
+  #FIXME "python-deepmerge"
+  "python-gobject"
+  "python-pydbus"
+  "python-telegram-bot"
+)
+
+
+source=(
+  "${pkgname}-${pkgver}.tar.gz"
+  "usr_lib_systemd_system_system-maintenance@.service"
+  "usr_lib_systemd_system_system-maintenance@.timer"
+  "usr_lib_sysusers.d_system-maintenance.conf"
+  "etc_sudoers.d_system-maintenance"
+  "usr_lib_tmpfiles.d_system-maintenance.conf"
+)
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  python ./setup.py build
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  python setup.py install --root="${pkgdir}/" --optimize=1 --skip-build
+
+  install -Dm0644 \
+    "${startdir}/usr_lib_systemd_system_whistleblower.service" \
+    "${pkgdir}/usr/lib/systemd/system/whistleblower.service"
+
+  install -Dm0644 \
+    "${startdir}/usr_share_dbus-1_system-services_com.github.radium226.Whistleblower.service" \
+    "${pkgdir}/usr/share/dbus-1/system-services/com.github.radium226.Whistleblower.service"
+
+  install -Dm0644 \
+    "${startdir}/etc_dbus-1_system.d_com.github.radium226.Whistleblower.conf" \
+    "${pkgdir}/etc/dbus-1/system.d/com.github.radium226.Whistleblower.conf"
+}

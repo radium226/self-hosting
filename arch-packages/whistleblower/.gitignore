@@ -1,0 +1,7 @@
+/dist
+/*.tar.xz
+/*.egg-info
+/*.tar.gz
+/whistleblower.toml
+/src
+/pkg
