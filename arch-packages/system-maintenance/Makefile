@@ -19,3 +19,9 @@ build: ./$(NAME)-$(VERSION).tar.gz
 			--noconfirm \
 			--clean \
 			--cleanbuild
+
+.PHONY: clean
+clean:
+	find . -name "*.tar.gz" | xargs -I {} rm "{}"
+	find . -name "*.tar.xz" | xargs -I {} rm "{}"
+	find -name "*.egg-info" -type "d" | xargs -I {} rm -Rf "{}"
