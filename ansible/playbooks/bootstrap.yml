@@ -1,0 +1,22 @@
+---
+- hosts: kimsufi
+  gather_facts: no
+  vars:
+    ansible_ssh_user: root
+    bootstrap_ansible_user: ansible
+    bootstrap_reboot: yes
+    bootstrap_yay_user: "yay"
+    bootstrap_yay_snapshot_url: "https://aur.archlinux.org/cgit/aur.git/snapshot/yay.tar.gz"
+  tasks:
+  - include: "./bootstrap/pacman.yml"
+    tags:
+    - "pacman"
+  - include: "./bootstrap/sudo.yml"
+    tags:
+    - "sudo"
+  - include: "./bootstrap/ansible.yml"
+    tags:
+    - "ansible"
+  - include: "./bootstrap/yay.yml"
+    tags:
+    - "yay"

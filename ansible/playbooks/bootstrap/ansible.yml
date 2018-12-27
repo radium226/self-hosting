@@ -1,0 +1,19 @@
+---
+- name: create user for ansible
+  user:
+    name: "{{ bootstrap_ansible_user }}"
+    groups:
+    - "wheel"
+    home: "/var/cache/{{ bootstrap_ansible_user }}"
+    shell: "/bin/bash"
+    system: yes
+    state: present
+  tags:
+  - "ansible"
+- name: set SSH authorized key for ansible user
+  authorized_key:
+    user: "{{ bootstrap_ansible_user }}"
+    key: "{{ lookup('file', '../../ssh/id_rsa.pub') }}"
+    state: present
+  tags:
+  - "ansible"

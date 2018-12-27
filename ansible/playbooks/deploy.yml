@@ -1,0 +1,8 @@
+---
+- hosts: kimsufi-01
+  gather_facts: no
+  become: yes
+  tasks:
+  - include: "deploy/encheres-publiques.yml"
+    tags:
+    - "encheres-publiques"

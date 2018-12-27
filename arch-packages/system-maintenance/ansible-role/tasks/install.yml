@@ -1,0 +1,5 @@
+---
+- name: install package
+  shell: |
+    find "{{ system_maintenance_source_folder_path }}" -name "*.tar.xz" | \
+      xargs -I {} yay -U "{}" --noconfirm

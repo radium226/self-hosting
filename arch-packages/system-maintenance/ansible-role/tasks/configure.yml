@@ -1,0 +1,19 @@
+---
+- name: copy vault password
+  copy:
+    src: "./.vault-password"
+    dest: "/etc/system-maintenance/vault-password"
+    owner: "system-maintenance"
+    mode: "u=rw,g=r,o="
+
+- name: start provision timer
+  systemd:
+    name: "system-maintenance@provision.timer"
+    state: started
+    enabled: yes
+
+- name: start upgrade timer
+  systemd:
+    name: "system-maintenance@upgrade.timer"
+    state: started
+    enabled: yes

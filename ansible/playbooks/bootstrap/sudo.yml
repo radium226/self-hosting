@@ -1,0 +1,26 @@
+---
+- name: install sudo package
+  pacman:
+    name: "sudo"
+    state: present
+
+- name: create /etc/sudoers.d directory
+  file:
+    path: "/etc/sudoers.d"
+    mode: "u=rwx,g=rx,o="
+    state: directory
+
+- name: setup drop-in config in /etc/sudoers
+  lineinfile:
+    path: "/etc/sudoers"
+    line: "#includedir /etc/sudoers.d"
+    state: present
+
+- name: setup wheel group as sudoers
+  copy:
+    content: |
+      Defaults:%wheel !requiretty
+      Defaults:%wheel env_keep += "PATH SSH_CLIENT"
+      %wheel ALL=(ALL) NOPASSWD:ALL
+    dest: "/etc/sudoers.d/wheel"
+    mode: "u=rw,g=r,o="

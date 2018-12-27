@@ -1,0 +1,4 @@
+---
+- src: https://github.com/radium226/encheres-publiques.git
+  version: ansible-role
+  name: encheres-publiques

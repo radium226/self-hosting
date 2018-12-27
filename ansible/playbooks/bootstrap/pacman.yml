@@ -1,0 +1,23 @@
+---
+- name: setup pacman
+  raw: |
+    pacman-key --init
+    find "/var/cache/pacman" -name "*.part" | \
+      xargs -I {} rm "{}"
+- name: setup pacman mirrors
+  raw: |
+    curl -s "https://www.archlinux.org/mirrorlist/?country=FR&country=GB&protocol=https&use_mirror_status=on" | \
+      sed -e 's/^#Server/Server/' -e '/^#/d' \
+        >"/etc/pacman.d/mirrorlist"
+- name: upgrade system
+  raw: |
+    pacman -Syu --noconfirm
+- name: install base-devel packages
+  raw: |
+    pacman -S base-devel --noconfirm
+- name: install python package
+  raw: |
+    pacman -S "python" --noconfirm
+- name: reboot system
+  reboot:
+  when: bootstrap_reboot | bool

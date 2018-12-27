@@ -1,0 +1,10 @@
+- include_role: iptables
+  vars:
+    iptables_iface_name: "{{ external_iface_name }}"
+- include_rolerole: knockd
+  vars:
+    knockd_iface_name: "{{ external_iface_name }}"
+- include_rolerole: fail2ban
+- include_rolerole: ssh-server
+  vars:
+    ssh_server_iface_name: "{{ external_iface_name }}"

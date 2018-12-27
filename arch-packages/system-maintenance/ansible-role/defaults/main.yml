@@ -1,0 +1,4 @@
+---
+system_maintenance_build_folder_path: "/tmp/build/system-maintenance"
+system_maintenance_source_folder_relatve_path: "self-hosting/arch-package/system-maintenance"
+system_maintenance_source_folder_path: "{{ system_maintenance_build_folder_path }}/{{ system_maintenance_source_folder_relatve_path }}"

@@ -1,0 +1,20 @@
+---
+- name: create user for yay
+  user:
+    name: "{{ bootstrap_yay_user }}"
+    groups:
+    - "wheel"
+    home: "/var/cache/{{ bootstrap_yay_user }}"
+    shell: "/bin/bash"
+    system: yes
+    state: present
+# FIXME: Replace with a makepkg module
+- name: build and install yay
+  shell: |
+    mkdir -p "/tmp/{{ bootstrap_yay_user }}"
+    cd "/tmp/{{ bootstrap_yay_user }}"
+    wget "{{ bootstrap_yay_snapshot_url }}" -O "./yay.tar.gz"
+    tar xf "./yay.tar.gz" --strip-components=1
+    chown -R "{{ bootstrap_yay_user }}:{{ bootstrap_yay_user }}" .
+    su "{{ bootstrap_yay_user }}" -c "makepkg --syncdeps  --install --noconfirm"
+    cd -
