@@ -23,7 +23,7 @@ depends=(
 
 source=(
   "${pkgname}-${pkgver}.tar.gz"
-  "usr_lib_systemd_system_whistleblower"
+  "usr_lib_systemd_system_whistleblower.service"
   "usr_share_dbus-1_system-services_com.github.radium226.Whistleblower.service"
   "etc_dbus-1_system.d_com.github.radium226.Whistleblower.conf"
 )
