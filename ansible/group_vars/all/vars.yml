@@ -1,0 +1,3 @@
+---
+whistleblower_telegram_token: "{{ vault_whistleblower_telegram_token }}"
+whistleblower_telegram_chat_id: "{{ vault_whistleblower_telegram_chat_id }}"

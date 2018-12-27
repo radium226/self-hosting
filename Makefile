@@ -36,3 +36,12 @@ APPLICATION =
 .PHONY: deploy
 deploy: ansible-galaxy-install-requirements
 	$(call ansible-playbook,deploy.yml,$(ANSIBLE_SSH_USER),$(APPLICATION))
+
+.PHONY: ansible-vault-edit
+ansible-vault-edit:
+	cd "./ansible" && \
+	ansible-vault \
+		edit \
+		--vault-password-file="./.vault-password" \
+		$(ANSIBLE_VERBOSE) \
+			"./group_vars/all/vault.yml"
