@@ -1,7 +1,8 @@
 ---
 - name: copy vault password
   copy:
-    src: "./.vault-password"
+    content: |
+      {{ system_maintenance_vault_password }}
     dest: "/etc/system-maintenance/vault-password"
     owner: "system-maintenance"
     mode: "u=rw,g=r,o="

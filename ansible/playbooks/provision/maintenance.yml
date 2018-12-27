@@ -1,0 +1,4 @@
+---
+- include_role: "system-maintenance"
+  vars:
+    system_maintenance_vault_password: "{{ lookup('file', './.vault-password') }}"

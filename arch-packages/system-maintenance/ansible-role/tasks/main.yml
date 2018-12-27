@@ -8,13 +8,11 @@
   pip:
     name: "deepmerge"
 
-- name: build
-  include: "./build.yml"
-  become_user: "yay"
-
-- name: install
-  include: "./install.yml"
-  become_user: "yay"
+- name: build and install
+  include_role:
+    role: "arch-package"
+    vars:
+      arch_package_name: "system-maintenance"
 
 - name: configure
   include: "./configure.yml"

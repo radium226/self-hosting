@@ -1,0 +1,21 @@
+---
+- name: delete old build folder
+  file:
+    path: "{{ arch_package_build_folder_path }}"
+    state: absent
+  changed_when: false
+
+- name: create build folder
+  file:
+    path: "{{ arch_package_build_folder_path }}"
+    state: present
+  changed_when: false
+
+- name: clone git repo
+  git:
+    repo: "{{ arch_package_git_repo_url }}"
+    dest: "{{ arch_package_build_folder_path }}"
+
+- name: make package
+  command: make build
+    chdir: "{{ arch_package_source_folder_path }}"

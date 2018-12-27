@@ -1,0 +1,7 @@
+- name: build
+  include: "./build.yml"
+  become_user: "yay"
+
+- name: install
+  include: "./install.yml"
+  become_user: "yay"
