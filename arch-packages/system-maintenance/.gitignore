@@ -1,0 +1,4 @@
+/dist
+/*.tar.xz
+/*.egg-info
+/*.tar.gz

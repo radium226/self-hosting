@@ -1,7 +1,7 @@
 pkgname="system-maintenance"
-pkgver="${PKGVER}"
+pkgver="${VERSION}"
 pkgrel="1"
-arch=('any')
+arch=("any")
 
 prepare()
 {
@@ -27,9 +27,6 @@ source=(
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
-  ls -alrt
-  find . -type "f"
-  pwd
   python ./setup.py build
 }
 
