@@ -9,7 +9,8 @@ define ansible-playbook
 			-i "./ansible/inventory.ini" \
 			"./ansible/playbooks/$(1)" \
 				-e "ansible_ssh_user='$(2)'" \
-				$(shell if [[ -z "$(3)" ]]; then echo ""; else echo "--tags=$(3)"; fi )
+				$(shell if [[ -z "$(3)" ]]; then echo ""; else echo "--tags=$(3)"; fi ) \
+				--vault-password-file="./ansible/.vault-password"
 endef
 
 

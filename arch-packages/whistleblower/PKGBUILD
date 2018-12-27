@@ -23,11 +23,9 @@ depends=(
 
 source=(
   "${pkgname}-${pkgver}.tar.gz"
-  "usr_lib_systemd_system_system-maintenance@.service"
-  "usr_lib_systemd_system_system-maintenance@.timer"
-  "usr_lib_sysusers.d_system-maintenance.conf"
-  "etc_sudoers.d_system-maintenance"
-  "usr_lib_tmpfiles.d_system-maintenance.conf"
+  "usr_lib_systemd_system_whistleblower"
+  "usr_share_dbus-1_system-services_com.github.radium226.Whistleblower.service"
+  "etc_dbus-1_system.d_com.github.radium226.Whistleblower.conf"
 )
 
 build() {
