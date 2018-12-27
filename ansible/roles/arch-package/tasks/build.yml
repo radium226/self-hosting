@@ -8,7 +8,7 @@
 - name: create build folder
   file:
     path: "{{ arch_package_build_folder_path }}"
-    state: present
+    state: directory
   changed_when: false
 
 - name: clone git repo
@@ -16,6 +16,11 @@
     repo: "{{ arch_package_git_repo_url }}"
     dest: "{{ arch_package_build_folder_path }}"
 
+- name: debug
+  debug:
+    msg: "{{ arch_package_source_folder_path }}"
+
 - name: make package
-  command: make build
-    chdir: "{{ arch_package_source_folder_path }}"
+  shell: |
+    cd "{{ arch_package_source_folder_path }}"
+    make build

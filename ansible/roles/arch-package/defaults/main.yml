@@ -1,5 +1,5 @@
 ---
-arch_package_build_folder_path: "/tmp/build/{{ arch_package_name }}"
-arch_package_source_folder_relatve_path: "self-hosting/arch-packages/{{ arch_package_name }}"
+arch_package_build_folder_path: "/tmp/build/self-hosting"
+arch_package_source_folder_relatve_path: "arch-packages/{{ arch_package_name }}"
 arch_package_source_folder_path: "{{ arch_package_build_folder_path }}/{{ arch_package_source_folder_relatve_path }}"
-arch_package_git_repo_url: "git@github.com:radium226/self-hosting.git"
+arch_package_git_repo_url: "https://github.com/radium226/self-hosting.git"

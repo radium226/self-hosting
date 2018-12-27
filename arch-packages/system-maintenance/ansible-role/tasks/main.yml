@@ -2,17 +2,18 @@
 # FIXME We should not do that through pip but through yay instead
 - name: install pip
   yay:
-    name: pip
+    name: "python-pip"
     state: present
 - name: install deepmerge
   pip:
     name: "deepmerge"
+    state: present
 
 - name: build and install
   include_role:
-    role: "arch-package"
-    vars:
-      arch_package_name: "system-maintenance"
+    name: "arch-package"
+  vars:
+    arch_package_name: "system-maintenance"
 
 - name: configure
   include: "./configure.yml"
