@@ -6,5 +6,4 @@
       token="{{ whistleblower_telegram_token }}"
       chat_id="{{ whistleblower_telegram_chat_id }}"
     dest: "/etc/whistleblower.toml"
-    owner: "whistleblower"
     mode: "u=rw,g=r,o="
