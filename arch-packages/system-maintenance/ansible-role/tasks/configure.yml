@@ -12,6 +12,7 @@
     dest: "/etc/system-maintenance/vault-password"
     owner: "system-maintenance"
     mode: "u=rw,g=r,o="
+  when: "not (system_maintenance | bool)"
 
 - name: copy config
   copy:
