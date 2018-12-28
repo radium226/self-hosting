@@ -1,0 +1,17 @@
+- name: configure knockd
+  include_role:
+    name: "knockd-iptables-config"
+  vars:
+    knockd_iptables_config_name: "ssh"
+    knockd_iptables_config_sequence: "{{ ssh_server_knockd_sequence }}"
+    knockd_iptables_config_port: "{{ ssh_server_port }}"
+    knockd_iptables_config_iface_name: "{{ ssh_server_iface_name }}"
+  when: "ssh_knockd_state == 'present'"
+
+- name: unconfigure knockd
+  include_role:
+    name: "knockd-iptables-config"
+  vars:
+    knockd_iptables_config_name: "ssh"
+    knockd_iptables_config_state: absent
+  when: "ssh_knockd_state == 'absent'"

@@ -27,8 +27,8 @@ bootstrap: ansible-galaxy-install-requirements
 
 
 .PHONY: provision
-provision: ansible-galaxy-install-requirements
-	$(call ansible-playbook,provision.yml,$(ANSIBLE_SSH_USER),)
+provision: #ansible-galaxy-install-requirements
+	$(call ansible-playbook,provision.yml,$(ANSIBLE_SSH_USER),$(STEP))
 
 
 APPLICATION =
@@ -45,3 +45,19 @@ ansible-vault-edit:
 		--vault-password-file="./.vault-password" \
 		$(ANSIBLE_VERBOSE) \
 			"./group_vars/all/vault.yml"
+
+define knock
+	$(call ansible-local-shell,all,"knock -d 1000 {{ knockd_host_name }} {{ $(1)_knockd_sequence | replace(',', ' ') }}")
+endef
+
+define open-ssh-port
+	$(call knock,ssh_server)
+endef
+
+.PHONY: knock
+knock:
+	$(call knock,$(APPLICATION))
+
+.PHONY: open-ssh-port
+open-ssh-port:
+	$(call open-ssh-port)

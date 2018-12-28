@@ -1,0 +1,16 @@
+---
+- name: create config file
+  template:
+    src: "etc_knockd.conf.d_10-name.conf.j2"
+    dest: "/etc/knockd.conf.d/10-{{ knockd_iptables_config_name }}.conf"
+  when: "knockd_iptables_config_state == 'present'"
+  notify:
+  - restart knockd service
+
+- name: delete config file
+  file:
+    path: "/etc/knockd.conf.d/10-{{ knockd_iptables_config_name }}.conf"
+    state: absent
+  when: "knockd_iptables_config_state == 'absent'"
+  notify:
+  - restart knockd service

@@ -6,3 +6,6 @@
   - include: "provision/maintenance.yml"
     tags:
     - "maintenance"
+  - include: "provision/hardening.yml"
+    tags:
+    - "hardening"

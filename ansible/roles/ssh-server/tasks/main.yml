@@ -1,0 +1,4 @@
+# FIXME Add sshd hardening
+- include: "iptables.yml"
+- include: "knockd.yml"
+- include: "fail2ban.yml"

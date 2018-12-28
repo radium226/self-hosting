@@ -14,6 +14,18 @@ define ansible-playbook
 				--extra-vars="system_maintenance='no'"
 endef
 
+define ansible-local-shell
+	ANSIBLE_CONFIG="./ansible/ansible.cfg" \
+		ansible \
+			$(1) \
+			$(ANSIBLE_VERBOSE) \
+			-m "shell" \
+			-a $(2) \
+			-i "./ansible/inventory.ini" \
+				--connection="local" \
+				--vault-password-file="./ansible/.vault-password"
+endef
+
 
 define ansible-galaxy-install
 	cd "ansible" && \

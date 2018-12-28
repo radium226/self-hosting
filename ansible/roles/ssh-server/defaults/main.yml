@@ -1,0 +1,5 @@
+---
+ssh_server_port: 22
+ssh_fail2ban_state: present
+ssh_iptables_state: present
+ssh_knockd_state: present
