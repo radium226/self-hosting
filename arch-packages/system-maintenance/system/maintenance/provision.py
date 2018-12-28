@@ -19,5 +19,6 @@ def provision(prompt):
     vault_password_file_path = context.vault_password_file_path
     requirements_file_path = provisioning_folder_path / context.config["provision"]["requirements_file_path"]
     roles_folder_path = provisioning_folder_path / context.config["provision"]["roles_folder_path"]
+    config_file_path = provisioning_folder_path / context.config["provision"]["config_file_path"]
     AnsibleGalaxy().install_requirements(requirements_file_path, roles_folder_path)
-    Ansible(inventory_file_path, vault_password_file_path).run_playbook(provisioning_folder_path / context.config["provision"]["playbook_file_path"], limit=[host_name], local=True)
+    Ansible(inventory_file_path, vault_password_file_path, config_file_path).run_playbook(provisioning_folder_path / context.config["provision"]["playbook_file_path"], limit=[host_name], local=True)

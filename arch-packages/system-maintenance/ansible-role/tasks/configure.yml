@@ -21,6 +21,7 @@
       host_name = "{{ inventory_hostname }}"
       playbook_file_path = "playbooks/provision.yml"
       roles_folder_path = "galaxy-roles"
+      config_file_path = "ansible.cfg"
     dest: "/etc/system-maintenance/config.toml"
     owner: "system-maintenance"
     mode: "u=rw,g=r,o="

@@ -19,7 +19,8 @@ class Context:
             "git_repo_url": "https://github.com/radium226/odroid-xu4.git",
             "folder_path": "ansible",
             "requirements_file_path": "requirements.yml",
-            "roles_folder_path": "galaxy-roles"
+            "roles_folder_path": "galaxy-roles",
+            "config_file_path": "ansible.cfg"
         }
     }
 
