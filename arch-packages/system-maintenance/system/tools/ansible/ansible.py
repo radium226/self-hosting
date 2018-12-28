@@ -17,7 +17,7 @@ class Ansible:
         connection_args = ["--connection=local"] if local else []
         playbook_args = [str(playbook_file_path)]
         vault_password_args = [f"--vault-password-file={str(self.vault_password_file_path)}"] if self.vault_password_file_path else []
-        command = ["ansible-playbook"] + inventory_args + playbook_args + connection_args + vault_password_args + limit_args + ["--extra-vars='system_maintenance=yes'"]
+        command = ["ansible-playbook"] + inventory_args + playbook_args + ["--extra-vars='system_maintenance=yes'"] + connection_args + vault_password_args + limit_args
         print(f"command={command}")
 
         env = os.environ.copy()
