@@ -1,11 +1,7 @@
----
-#- include_role:
-#    name: "system-maintenance"
-#  vars:
-#    system_maintenance_vault_password: "{{ lookup('file', '../.vault-password') }}"
-
 - include_role:
     name: "whistleblower"
-  #vars:
-  #  whistleblower_telegram_token:
-  #  whistleblower_telegram_chat_id:
+
+- include_role:
+    name: "system-maintenance"
+  vars:
+    system_maintenance_vault_password: "{{ lookup('file', '../.vault-password') }}"

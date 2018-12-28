@@ -3,6 +3,6 @@
   gather_facts: no
   become: yes
   tasks:
-  #- include: "provision/security.yml"
   - include: "provision/maintenance.yml"
-  #- include: "provsion/vpn.yml"
+    tags:
+    - "maintenance"

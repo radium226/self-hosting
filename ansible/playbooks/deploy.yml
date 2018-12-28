@@ -3,6 +3,7 @@
   gather_facts: no
   become: yes
   tasks:
-  - include: "deploy/encheres-publiques.yml"
+  - include_role:
+      name: "encheres-publiques"
     tags:
     - "encheres-publiques"

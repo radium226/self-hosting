@@ -13,6 +13,17 @@
     owner: "system-maintenance"
     mode: "u=rw,g=r,o="
 
+- name: copy config
+  copy:
+    content: |
+      [provision]
+      git_repo_url = "{{ system_maintenance_git_repo_url }}"
+      host_name = "{{ inventory_hostname }}"
+      playbook_file_path = "playbooks/provision.yml"
+    dest: "/etc/system-maintenance/config.toml"
+    owner: "system-maintenance"
+    mode: "u=rw,g=r,o="
+
 - name: start provision timer
   systemd:
     name: "system-maintenance@provision.timer"

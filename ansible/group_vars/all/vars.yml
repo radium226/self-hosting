@@ -1,3 +1,7 @@
 ---
 whistleblower_telegram_token: "{{ vault_whistleblower_telegram_token }}"
 whistleblower_telegram_chat_id: "{{ vault_whistleblower_telegram_chat_id }}"
+
+encheres_publiques_telegram_token: "{{ vault_encheres_publiques_telegram_token }}"
+
+system_maintenance_git_repo_url: "https://github.com/radium226/self-hosting.git"

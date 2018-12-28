@@ -1,5 +1,0 @@
----
-- include_role:
-    name: encheres-publiques
-  vars:
-    encheres_publiques_token: "663426260:AAFmgoJLeXG30ErZZaXFvEdOI4Xks_xCm9I"
