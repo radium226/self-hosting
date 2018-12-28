@@ -20,6 +20,7 @@
       git_repo_url = "{{ system_maintenance_git_repo_url }}"
       host_name = "{{ inventory_hostname }}"
       playbook_file_path = "playbooks/provision.yml"
+      roles_folder_path = "galaxy-roles"
     dest: "/etc/system-maintenance/config.toml"
     owner: "system-maintenance"
     mode: "u=rw,g=r,o="
