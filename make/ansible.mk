@@ -10,7 +10,8 @@ define ansible-playbook
 			"./ansible/playbooks/$(1)" \
 				-e "ansible_ssh_user='$(2)'" \
 				$(shell if [[ -z "$(3)" ]]; then echo ""; else echo "--tags=$(3)"; fi ) \
-				--vault-password-file="./ansible/.vault-password"
+				--vault-password-file="./ansible/.vault-password" \
+				--extra-vars="system_maintenance='no'"
 endef
 
 
