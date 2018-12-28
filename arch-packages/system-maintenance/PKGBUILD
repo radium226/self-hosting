@@ -9,6 +9,7 @@ prepare()
 }
 
 depends=(
+  "ansible"
   "python-toml"
   #FIXME "python-deepmerge"
 )
