@@ -21,7 +21,7 @@ class Ansible:
         #print(f"command={command}")
 
         env = os.environ.copy()
-        env["ANSIBLE_CONFIG"] = str(config_file_path)
+        env["ANSIBLE_CONFIG"] = str(self.config_file_path)
 
         process = Popen(command, env=env)
         return_code = process.wait()
