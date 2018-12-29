@@ -16,7 +16,7 @@ ssh-keygen:
 
 .PHONY: ansible-galaxy-install-requirements
 ansible-galaxy-install-requirements:
-	$(call ansible-galaxy-install,requirements.yml,galaxy-roles,$(REQUIREMENTS))
+	$(call ansible-galaxy-install,requirements.yml,galaxy-roles,$(DOWNLOAD_ROLES))
 
 
 .PHONY: bootstrap
