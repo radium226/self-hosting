@@ -6,9 +6,13 @@
       xargs -I {} rm "{}"
 - name: setup pacman mirrors
   raw: |
-    curl -s "https://www.archlinux.org/mirrorlist/?country=FR&country=GB&protocol=https&use_mirror_status=on" | \
-      sed -e 's/^#Server/Server/' -e '/^#/d' \
-        >"/etc/pacman.d/mirrorlist"
+    if [[ -z "{{ bootstrap_pacman_mirror }}" ]]; then
+      curl -s "https://www.archlinux.org/mirrorlist/?country=FR&country=GB&protocol=https&use_mirror_status=on" | \
+        sed -e 's/^#Server/Server/' -e '/^#/d' \
+          >"/etc/pacman.d/mirrorlist"
+    else
+      echo 'Server = {{ bootstrap_pacman_mirror }}' >"/etc/pacman.d/mirrorlist"
+    fi
 - name: upgrade system
   raw: |
     pacman -Syu --noconfirm

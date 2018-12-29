@@ -14,28 +14,26 @@ ssh-keygen:
 		-C "self-hosting"
 
 
-ANSIBLE_GALAXY_INSTALL_REQUIREMENTS_PURGE = true
-
 .PHONY: ansible-galaxy-install-requirements
 ansible-galaxy-install-requirements:
-	$(call ansible-galaxy-install,requirements.yml,galaxy-roles,$(ANSIBLE_GALAXY_INSTALL_REQUIREMENTS_PURGE))
+	$(call ansible-galaxy-install,requirements.yml,galaxy-roles,$(REQUIREMENTS))
 
 
 .PHONY: bootstrap
-bootstrap: ansible-galaxy-install-requirements
-	$(call ansible-playbook,bootstrap.yml,root,)
+bootstrap: #ansible-galaxy-install-requirements
+	$(call ansible-playbook,bootstrap.yml,root,$(STEP),$(GROUP))
 
 
 .PHONY: provision
 provision: #ansible-galaxy-install-requirements
-	$(call ansible-playbook,provision.yml,$(ANSIBLE_SSH_USER),$(STEP))
+	$(call ansible-playbook,provision.yml,$(ANSIBLE_SSH_USER),$(STEP),$(GROUP))
 
 
 APPLICATION =
 
 .PHONY: deploy
 deploy: ansible-galaxy-install-requirements
-	$(call ansible-playbook,deploy.yml,$(ANSIBLE_SSH_USER),$(APPLICATION))
+	$(call ansible-playbook,deploy.yml,$(ANSIBLE_SSH_USER),$(APPLICATION),$(GROUP))
 
 .PHONY: ansible-vault-edit
 ansible-vault-edit:

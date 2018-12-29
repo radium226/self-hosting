@@ -1,0 +1,1 @@
+bootstrap_pacman_mirror: "http://mirror.archlinuxarm.org/$arch/$repo"
