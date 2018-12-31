@@ -32,3 +32,6 @@ class InteractionClient(object):
             return answer_text
         except KeyboardInterrupt:
             loop.quit()
+
+    def share(self, file_path):
+        self.interaction_interface.Share(str(file_path))

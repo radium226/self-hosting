@@ -6,6 +6,8 @@ import argparse
 
 import sys
 
+from pathlib import Path
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -26,17 +28,21 @@ if __name__ == "__main__":
     test_parser.add_argument("--text", required=True, dest="question_text")
     def test(client, args):
         answer_text = client.ask(args.question_text, keyboard=["Oui", "Non"])
-        print(answer_text)
         if answer_text == "Oui":
-            print()
             sys.exit(0)
         else:
             sys.exit(1)
 
+    share_parser = subparsers.add_parser("share")
+    share_parser.add_argument("--file", required=True, dest="file_path")
+    def share(client, args):
+        client.share(Path(args.file_path))
+
     actions = {
         "ask": ask,
         "tell": tell,
-        "test": test
+        "test": test,
+        "share": share
     }
 
     args = parser.parse_args()

@@ -2,6 +2,7 @@
 
 from .ask import Ask
 from .tell import Tell
+from .share import Share
 
 from telegram import Bot, ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
@@ -25,6 +26,8 @@ class InteractionBot(object):
                     self._do_ask(action.question_text, action.keyboard, action.answer_callback)
                 elif isinstance(action, Tell):
                     self._do_tell(action.text, action.keyboard)
+                elif isinstance(action, Share):
+                    self._do_share(action.file_path)
                 else:
                     raise Exception(f"Unknown action {action}")
 
@@ -32,7 +35,6 @@ class InteractionBot(object):
         self.action_thread.start()
 
     def _do_tell(self, text, keyboard):
-        print(f"keyboard={keyboard}")
         reply_markup = ReplyKeyboardRemove()
         if keyboard:
             reply_markup = ReplyKeyboardMarkup([keyboard])
@@ -43,7 +45,6 @@ class InteractionBot(object):
         message_queue = Queue()
         def handler_callback(bot, update):
             message = update.message
-            print(f" ----> {message.text}")
             message_queue.put(message)
 
         updater = Updater(self.telegram_token)
@@ -56,8 +57,14 @@ class InteractionBot(object):
         self._do_tell("Ok! ", None)
         answer_callback(message.text)
 
+    def _do_share(self, file_path):
+        self.bot.send_document(self.telegram_chat_id, document=file_path.open("rb"))
+
     def tell(self, text, keyboard = None):
         self.action_queue.put(Tell(text, keyboard))
 
     def ask(self, question_text, keyboard, answer_callback):
         self.action_queue.put(Ask(question_text, keyboard, answer_callback))
+
+    def share(self, file_path):
+        self.action_queue.put(Share(file_path))
