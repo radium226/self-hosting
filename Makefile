@@ -32,7 +32,7 @@ provision: #ansible-galaxy-install-requirements
 APPLICATION =
 
 .PHONY: deploy
-deploy: ansible-galaxy-install-requirements
+deploy: #ansible-galaxy-install-requirements
 	$(call ansible-playbook,deploy.yml,$(ANSIBLE_SSH_USER),$(APPLICATION),$(GROUP))
 
 .PHONY: ansible-vault-edit

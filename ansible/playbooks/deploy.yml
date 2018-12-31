@@ -7,6 +7,10 @@
       name: "encheres-publiques"
     tags:
     - "encheres-publiques"
+  - include_role:
+      name: "telegram-interaction"
+    tags:
+    - "interaction"
 
 - hosts: odroid-01
   gather_facts: no
