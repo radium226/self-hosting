@@ -11,3 +11,7 @@ knockd_iface_name: "{{ external_iface_name }}"
 
 ssh_server_iface_name: "{{ external_iface_name }}"
 ssh_server_knockd_sequence: "{{ vault_ssh_server_knockd_sequence }}"
+
+interaction_telegram_token: "{{ vault_interaction_telegram_token }}"
+interaction_telegram_chat_id: "{{ vault_interaction_telegram_chat_id }}"
+

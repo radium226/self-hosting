@@ -1,0 +1,9 @@
+---
+- name: copy config
+  copy:
+    content: |
+      [telegram]
+      token="{{ interaction_telegram_token }}"
+      chat_id="{{ interaction_telegram_chat_id }}"
+    dest: "/etc/interaction.toml"
+    mode: "u=rw,g=r,o="
