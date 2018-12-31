@@ -1,0 +1,69 @@
+pkgname="${NAME}"
+pkgver="${VERSION}"
+pkgrel="1"
+arch=("any")
+
+prepare()
+{
+  :
+}
+
+depends=(
+  "python-toml"
+  #FIXME "python-deepmerge"
+  "python-gobject"
+  "python-pydbus"
+  "python-telegram-bot"
+)
+
+
+source=(
+  "${pkgname}-${pkgver}.tar.gz"
+  "usr_lib_systemd_system_interaction.service"
+  "usr_share_dbus-1_system-services_com.github.radium226.Interaction.service"
+  "etc_dbus-1_system.d_com.github.radium226.Interaction.conf"
+  "usr_lib_tmpfiles.d_interaction.conf"
+  "usr_lib_tmpfiles.d_interaction.conf"
+)
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  python ./setup.py build
+}
+
+provide=(
+  "interaction"
+)
+
+backup=(
+  "etc/interaction.toml"
+)
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  python setup.py install --root="${pkgdir}/" --optimize=1 --skip-build
+
+  install -Dm0644 \
+    "${startdir}/etc_interaction.toml" \
+    "${pkgdir}/etc/interaction.toml"
+
+  install -Dm0644 \
+    "${startdir}/usr_lib_systemd_system_interaction.service" \
+    "${pkgdir}/usr/lib/systemd/system/interaction.service"
+
+  install -Dm0644 \
+    "${startdir}/usr_share_dbus-1_system-services_com.github.radium226.Interaction.service" \
+    "${pkgdir}/usr/share/dbus-1/system-services/com.github.radium226.Interaction.service"
+
+  install -Dm0644 \
+    "${startdir}/etc_dbus-1_system.d_com.github.radium226.Interaction.conf" \
+    "${pkgdir}/etc/dbus-1/system.d/com.github.radium226.Interaction.conf"
+
+  install -Dm0644 \
+    "${startdir}/usr_lib_sysusers.d_interaction.conf" \
+    "${pkgdir}/usr/lib/sysusers.d/interaction.conf"
+
+  install -Dm0644 \
+    "${startdir}/usr_lib_tmpfiles.d_interaction.conf" \
+    "${pkgdir}/usr/lib/tmpfiles.d/interaction.conf"
+}

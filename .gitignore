@@ -5,3 +5,4 @@
 /ansible/galaxy-roles/*
 /ansible/.vault-password
 /Kimsufi.txt
+.venv

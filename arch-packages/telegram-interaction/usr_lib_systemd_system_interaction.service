@@ -1,0 +1,8 @@
+[Unit]
+Description=Interaction Service
+
+[Service]
+Type=dbus
+User=interaction
+ExecStart=/usr/bin/interactiond
+BusName=com.github.radium226.Interaction
