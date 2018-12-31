@@ -31,6 +31,7 @@ setup(
         "interaction.dbus",
         "interaction.context",
         "interaction.telegram",
-        "interaction.server"
+        "interaction.server",
+        "interaction.client"
     ]
 )
