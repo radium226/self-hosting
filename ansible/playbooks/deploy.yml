@@ -3,19 +3,23 @@
   gather_facts: no
   become: yes
   tasks:
+  #- include_role:
+  #    name: "encheres-publiques"
+  #  tags:
+  #  - "encheres-publiques"
+  #- include_role:
+  #    name: "telegram-interaction"
+  #  tags:
+  #  - "interaction"
   - include_role:
-      name: "encheres-publiques"
+      name: "scraping"
     tags:
-    - "encheres-publiques"
-  - include_role:
-      name: "telegram-interaction"
-    tags:
-    - "interaction"
+    - "scraping"
 
-- hosts: odroid-01
-  gather_facts: no
-  become: yes
-  roles:
-  - role: "pulseaudio"
-    tags:
-    - "pulseaudio"
+#- hosts: odroid-01
+#  gather_facts: no
+#  become: yes
+#  roles:
+#  - role: "pulseaudio"
+#    tags:
+#    - "pulseaudio"

@@ -26,6 +26,18 @@ define ansible-local-shell
 				--vault-password-file="./ansible/.vault-password"
 endef
 
+define ansible
+	ANSIBLE_CONFIG="./ansible/ansible.cfg" \
+		ansible \
+			$(1) \
+			$(ANSIBLE_VERBOSE) \
+			-m "$(2)" \
+			-a $(3) \
+			-i "./ansible/inventory.ini" \
+				--vault-password-file="./ansible/.vault-password" \
+				-e "ansible_ssh_user='$(ANSIBLE_SSH_USER)'"
+endef
+
 define ansible-galaxy-install
 	cd "ansible" && \
 	if [[ "$(3)" == "true" ]]; then rm -Rf "./$(2)" ; mkdir -p "./$(2)" ; fi && \

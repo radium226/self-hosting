@@ -59,3 +59,8 @@ knock:
 .PHONY: open-ssh-port
 open-ssh-port:
 	$(call open-ssh-port)
+
+
+.PHONY: copy-to
+copy-to:
+	$(call ansible,$(GROUP),copy,'src="$(SRC)" dest="$(DEST)"')

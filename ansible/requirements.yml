@@ -1,4 +1,9 @@
 ---
-- src: https://github.com/radium226/encheres-publiques.git
+#- src: https://github.com/radium226/encheres-publiques.git
+#  version: ansible-role
+#  name: encheres-publiques
+
+- src: "git@gitlab.com:self-hosting/scraping.git"
+  scm: git
   version: ansible-role
-  name: encheres-publiques
+  name: scraping

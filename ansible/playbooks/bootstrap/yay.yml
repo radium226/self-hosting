@@ -8,6 +8,13 @@
     shell: "/bin/bash"
     system: yes
     state: present
+- name: set SSH authorized key for yay user
+  authorized_key:
+    user: "{{ bootstrap_ansible_user }}"
+    key: "{{ lookup('file', '../../ssh/id_rsa.pub') }}"
+    state: present
+  tags:
+  - "ansible"
 # FIXME: Replace with a makepkg module
 - name: build and install yay
   shell: |
