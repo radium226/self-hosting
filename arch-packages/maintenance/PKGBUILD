@@ -1,0 +1,74 @@
+pkgname="${NAME}"
+pkgver="${VERSION}"
+pkgrel="1"
+arch=("any")
+
+prepare()
+{
+  :
+}
+
+depends=(
+  "python-toml"
+  #FIXME "python-deepmerge"
+  "python-gobject"
+  "python-pydbus"
+  "python-cherrypy"
+  "ansible"
+  "sudo"
+  "git"
+)
+
+
+source=(
+  "${pkgname%-git}-${pkgver}.tar.gz"
+  "etc_maintenance_config.toml"
+  "usr_lib_systemd_system_maintenance.service"
+  "usr_share_dbus-1_system-services_com.github.radium226.Maintenance.service"
+  "etc_dbus-1_system.d_com.github.radium226.Maintenance.conf"
+  "usr_lib_sysusers.d_maintenance.conf"
+  "usr_lib_tmpfiles.d_maintenance.conf"
+  "etc_sudoers.d_maintenance"
+)
+
+backup=(
+  "etc/maintenance/config.toml"
+)
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  python ./setup.py build
+}
+
+package() {
+  cd "${srcdir}/${pkgname%-git}-${pkgver}"
+  python setup.py install --root="${pkgdir}/" --optimize=1 --skip-build
+
+  install -Dm0644 \
+    "${startdir}/etc_maintenance_config.toml" \
+    "${pkgdir}/etc/maintenance/config.toml"
+
+  install -Dm0644 \
+    "${startdir}/usr_lib_systemd_system_maintenance.service" \
+    "${pkgdir}/usr/lib/systemd/system/maintenance.service"
+
+  install -Dm0644 \
+    "${startdir}/usr_share_dbus-1_system-services_com.github.radium226.Maintenance.service" \
+    "${pkgdir}/usr/share/dbus-1/system-services/com.github.radium226.Maintenance.service"
+
+  install -Dm0644 \
+    "${startdir}/etc_dbus-1_system.d_com.github.radium226.Maintenance.conf" \
+    "${pkgdir}/etc/dbus-1/system.d/com.github.radium226.Maintenance.conf"
+
+  install -Dm0644 \
+    "${startdir}/usr_lib_sysusers.d_maintenance.conf" \
+    "${pkgdir}/usr/lib/sysusers.d/maintenance.conf"
+
+  install -Dm0644 \
+    "${startdir}/usr_lib_tmpfiles.d_maintenance.conf" \
+    "${pkgdir}/usr/lib/tmpfiles.d/maintenance.conf"
+
+    install -Dm660 \
+      "${srcdir}/etc_sudoers.d_maintenance" \
+      "${pkgdir}/etc/sudoers.d/maintenance"
+}

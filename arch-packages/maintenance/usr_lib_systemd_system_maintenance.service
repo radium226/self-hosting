@@ -1,0 +1,8 @@
+[Unit]
+Description=Maintenance Service
+
+[Service]
+Type=dbus
+User=interaction
+ExecStart=/usr/bin/maintenanced
+BusName=com.github.radium226.Maintenance
