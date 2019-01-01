@@ -2,7 +2,7 @@
 - hosts: kimsufi-01
   gather_facts: no
   become: yes
-  tasks:
+  roles:
   #- include_role:
   #    name: "encheres-publiques"
   #  tags:
@@ -11,8 +11,7 @@
   #    name: "telegram-interaction"
   #  tags:
   #  - "interaction"
-  - include_role:
-      name: "scraping"
+  - role: "scraping"
     tags:
     - "scraping"
 
