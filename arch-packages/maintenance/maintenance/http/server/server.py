@@ -36,7 +36,7 @@ class MaintainerHTTPServer(object):
 
     @classmethod
     def start(self, context):
-        client = MaintainerDBusClient()
+        client = MaintainerDBusClient(context)
         token = context.config["http"]["token"]
         root_controller = RootController(token, client)
         cherrypy.config.update({

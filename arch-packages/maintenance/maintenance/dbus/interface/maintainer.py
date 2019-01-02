@@ -10,6 +10,8 @@ class MaintainerInterface(object):
                 <method name='RunAnsiblePlaybook'>
                     <arg name='playbook_name' type='s' direction='in'/>
                 </method>
+                <method name='UpgradeSystem'>
+                </method>
             </interface>
         </node>
     """
@@ -24,3 +26,6 @@ class MaintainerInterface(object):
 
     def RunAnsiblePlaybook(self, playbook_name):
         self.maintainer.run_ansible_playbook(playbook_name)
+
+    def UpgradeSystem(self):
+        self.maintainer.upgrade_system()

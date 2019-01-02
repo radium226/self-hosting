@@ -38,9 +38,9 @@ class Context:
         }
     }
 
-    def __init__(self):
-        self.config = Context._read_config()
-        self.vault_password_file_path = Path("/etc/system-maintenance/vault-password")
+    def __init__(self, system):
+        self.system = system
+        self.config = Context._read_config(system)
 
     def __str__(self):
         return f"Context(config={self.config})"
@@ -63,7 +63,7 @@ class Context:
         return merged_config
 
     @staticmethod
-    def _read_config():
+    def _read_config(system):
         def read_toml(file_path):
             try:
                 return toml.loads(file_path.read_text())
@@ -71,7 +71,7 @@ class Context:
                 return {}
 
         file_paths = [
-            Path("/etc/maintenance/config.toml"),
+            Path("/etc/maintenance/config.toml") if system else Path.home() / ".config/maintenance/config.toml",
             Path(os.getcwd()) / "maintenance.toml"
         ]
         config = reduce(

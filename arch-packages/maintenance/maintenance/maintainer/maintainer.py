@@ -4,6 +4,7 @@ from maintenance.logging import info
 from pathlib import Path
 from maintenance.tools.ansible import Ansible
 from maintenance.tools.git import Git
+from maintenance.tools.yay import Yay
 from maintenance.logging import info
 
 from interaction.client import InteractionClient
@@ -12,7 +13,7 @@ class Maintainer(object):
 
     def __init__(self, context):
         self.context = context
-        self.interaction_client = InteractionClient()
+        self.interaction_client = InteractionClient(context)
         print(context)
 
     def deploy(self, application_name):
@@ -36,6 +37,17 @@ class Maintainer(object):
             ansible.install_requirements(force=True)
             info("Running playbook")
             ansible.run_playbook(playbook_file_path, local=True, limit=[host_name], tags=[application_name])
+
+    def upgrade_system(self):
+        yay = Yay(self.context)
+        yay.refresh_available_packages()
+        upgrades = yay.list_upgrades()
+        if len(upgrades) > 0:
+            self.interaction_client.tell("Les paquets suivants peuvent être mis à jour : \n" + "\n".join(map(lambda upgrade: f" - <b>{upgrade.package.name}</b> de {upgrade.old_version} vers {upgrade.new_version}", upgrades)))
+            if self.interaction_client.ask("Lancer l'installation ? ", keyboard=["Oui", "Non"]) == "Oui":
+                yay.upgrade_packages(map(lambda upgrade: upgrade.package, upgrades))
+        else:
+            self.interaction_client.tell("Il y n'y a pas de paquets à mettre à jour ")
 
 
     def run_ansible_playbook(self, playbook_name):
