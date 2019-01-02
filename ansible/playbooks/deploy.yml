@@ -11,6 +11,9 @@
   #    name: "telegram-interaction"
   #  tags:
   #  - "interaction"
+  - role: "telegram-interaction"
+    tags:
+    - "interaction"
   - role: "scraping"
     tags:
     - "scraping"
