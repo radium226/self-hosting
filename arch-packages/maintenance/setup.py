@@ -40,6 +40,7 @@ setup(
         "maintenance.tools",
         "maintenance.tools.ansible",
         "maintenance.tools.git",
+        "maintenance.tools.yay",
         "maintenance.maintainer"
     ]
 )
