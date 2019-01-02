@@ -4,5 +4,5 @@ Description=Maintenance Service
 [Service]
 Type=dbus
 User=maintenance
-ExecStart=/usr/bin/maintenanced
+ExecStart=/usr/bin/maintenanced --system
 BusName=com.github.radium226.Maintenance
