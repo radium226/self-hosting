@@ -30,11 +30,53 @@
     mode: "u=rw,g=r,o="
     owner: "maintenance"
 
+- name: copy Ansible Vault password
+  copy:
+    content: |
+      {{ maintenance_vault_password }}
+    dest: "/etc/maintenance/vault-password"
+    owner: "maintenance"
+    mode: "u=rw,g=r,o=r"
+  when: "not (system_maintenance | bool)"
+
+- name: create SSH config folder
+  file:
+    path: "/etc/maintenance/ssh"
+    state: directory
+    owner: "maintenance"
+
+- name: copy SSH config
+  copy:
+    content: |
+      {{ maintenance_ssh_config }}
+    dest: "/etc/maintenance/ssh/config"
+    owner: "maintenance"
+    mode: "u=rw,g=r,o=r"
+  when: "not (system_maintenance | bool)"
+
+#- name: copy private SSH key
+#  copy:
+#    content: |
+#      {{ maintenance_ssh_private_key }}
+#    dest: "/etc/maintenance/ssh/id_rsa"
+#    owner: "maintenance"
+#    mode: "u=rw,g=r,o="
+#  when: "not (system_maintenance | bool)"
+
+#- name: copy public SSH key
+#  copy:
+#    content: |
+#      {{ maintenance_ssh_public_key }}
+#    dest: "/etc/maintenance/ssh/id_rsa.pub"
+#    owner: "maintenance"
+#    mode: "u=rw,g=r,o="
+#  when: "not (system_maintenance | bool)"
+
 - name: add iptables rule
   copy:
     content: |
       -A INPUT -i {{ maintenance_iface_name }} -p tcp --dport {{ maintenance_http_port }} -j ACCEPT
-    dest: "/etc/iptables/iptables.rules.d/10-pulseaudio.rules"
+    dest: "/etc/iptables/iptables.rules.d/10-maintenance.rules"
   notify: restart iptables service
 
 - name: start service
