@@ -11,7 +11,6 @@ class InteractionClient(object):
 
     def __init__(self, context):
         self.bus = SystemBus() if context.system else SessionBus()
-        print(f"context.system={context.system}")
         self.loop = GLib.MainLoop()
         self.interaction_interface = self.bus.get(SERVICE_NAME, "/Interaction")
     def tell(self, text):
