@@ -41,7 +41,7 @@ class InteractionBot(object):
 
         self.bot.send_message(self.telegram_chat_id, text, reply_markup=reply_markup)
 
-    def _do_ask(self, question_text, keyboard, answer_callback):
+    def _do_ask(self, question_text, keyboard, answer_callback, answer_timeout=30, default_answer_text=None):
         message_queue = Queue()
         def handler_callback(bot, update):
             message = update.message
@@ -52,10 +52,19 @@ class InteractionBot(object):
         updater.start_polling()
 
         self._do_tell(question_text, keyboard)
-        message = message_queue.get()
+        message = None
+        try:
+            message = message_queue.get(timeout=answer_timeout)
+        except:
+            pass
         updater.stop()
-        self._do_tell("Ok! ", None)
-        answer_callback(message.text)
+        if message:
+            self._do_tell("Ok! ", None)
+            answer_callback(message.text)
+        else:
+            self._do_tell("Trop tard :(", None)
+            answer_callback(default_answer_text if default_answer_text else keyboard[0] if len(keyboard) > 0 else "")
+
 
     def _do_share(self, file_path):
         self.bot.send_document(self.telegram_chat_id, document=file_path.open("rb"))
