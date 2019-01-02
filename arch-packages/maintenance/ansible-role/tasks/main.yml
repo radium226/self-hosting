@@ -1,0 +1,44 @@
+---
+# FIXME We should not do that through pip but through yay instead
+- name: install pip
+  yay:
+    name: "python-pip"
+    state: present
+- name: install deepmerge
+  pip:
+    name: "deepmerge"
+    state: present
+
+- name: build and install
+  include_role:
+    name: "arch-package"
+  vars:
+    arch_package_name: "maintenance"
+
+- name: copy config
+  copy:
+    content: |
+      [git]
+      repo_url = "{{ maintenance_git_repo_url }}"
+
+      [host]
+      name = "{{ inventory_hostname }}"
+
+      [http]
+      token = "{{ maintenance_http_token }}"
+    dest: "/etc/maintenance/config.toml"
+    mode: "u=rw,g=r,o="
+    owner: "maintenance"
+
+- name: add iptables rule
+  copy:
+    content: |
+      -A INPUT -i {{ maintenance_iface_name }} -p tcp --dport {{ maintenance_http_port }} -j ACCEPT
+    dest: "/etc/iptables/iptables.rules.d/10-pulseaudio.rules"
+  notify: restart iptables service
+
+- name: start service
+  systemd:
+    name: "maintenance.service"
+    state: started
+    enabled: yes

@@ -15,3 +15,7 @@ ssh_server_knockd_sequence: "{{ vault_ssh_server_knockd_sequence }}"
 interaction_telegram_token: "{{ vault_interaction_telegram_token }}"
 interaction_telegram_chat_id: "{{ vault_interaction_telegram_chat_id }}"
 
+maintenance_http_token: "{{ vault_maintenance_http_token }}"
+maintenance_git_repo_url: "https://github.com/radium226/self-hosting.git"
+maintenance_http_port: 8080
+maintenance_iface_name: "{{ external_iface_name }}"
