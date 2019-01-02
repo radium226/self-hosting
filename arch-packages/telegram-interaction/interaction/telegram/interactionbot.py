@@ -4,7 +4,8 @@ from .ask import Ask
 from .tell import Tell
 from .share import Share
 
-from telegram import Bot, ReplyKeyboardMarkup, ReplyKeyboardRemove
+import telegram
+from telegram import Bot, ReplyKeyboardMarkup, ReplyKeyboardRemove, ParseMode
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 from queue import Queue
@@ -35,11 +36,14 @@ class InteractionBot(object):
         self.action_thread.start()
 
     def _do_tell(self, text, keyboard):
-        reply_markup = ReplyKeyboardRemove()
-        if keyboard:
-            reply_markup = ReplyKeyboardMarkup([keyboard])
+        try:
+            reply_markup = ReplyKeyboardRemove()
+            if keyboard:
+                reply_markup = ReplyKeyboardMarkup([keyboard])
 
-        self.bot.send_message(self.telegram_chat_id, text, reply_markup=reply_markup)
+            self.bot.send_message(self.telegram_chat_id, text, reply_markup=reply_markup, parse_mode=telegram.ParseMode.HTML)
+        except Exception as e:
+            print(e)
 
     def _do_ask(self, question_text, keyboard, answer_callback, answer_timeout=30, default_answer_text=None):
         message_queue = Queue()

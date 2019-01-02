@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from pydbus import SystemBus
+from pydbus import SystemBus, SessionBus
 from interaction.dbus import SERVICE_NAME
 
 from gi.repository import GLib
@@ -9,8 +9,9 @@ from queue import Queue
 
 class InteractionClient(object):
 
-    def __init__(self):
-        self.bus = SystemBus()
+    def __init__(self, context):
+        self.bus = SystemBus() if context.system else SessionBus()
+        print(f"context.system={context.system}")
         self.loop = GLib.MainLoop()
         self.interaction_interface = self.bus.get(SERVICE_NAME, "/Interaction")
     def tell(self, text):

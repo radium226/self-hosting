@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from interaction.client import InteractionClient
+from interaction.context import Context
 
 import argparse
 
@@ -11,6 +12,7 @@ from pathlib import Path
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument("--system", action="store_true", default=False)
     subparsers = parser.add_subparsers(dest="action") # this line changed
 
     tell_parser = subparsers.add_parser("tell")
@@ -46,5 +48,6 @@ if __name__ == "__main__":
     }
 
     args = parser.parse_args()
-    client = InteractionClient()
+    context = Context(args.system)
+    client = InteractionClient(context)
     actions[args.action](client, args)

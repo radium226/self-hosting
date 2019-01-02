@@ -18,8 +18,9 @@ class Context:
         }
     }
 
-    def __init__(self):
-        self.config = Context._read_config()
+    def __init__(self, system=False):
+        self.config = Context._read_config(system)
+        self.system = system
 
     def __str__(self):
         return f"Context(config={self.config})"
@@ -42,9 +43,9 @@ class Context:
         return merged_config
 
     @staticmethod
-    def _read_config():
+    def _read_config(system):
         file_paths = [
-            Path("/etc/interaction.toml"),
+            Path("/etc/interaction.toml") if system else Path.home() / ".config/interaction.toml",
             Path(os.getcwd()) / "interaction.toml"
         ]
         config = reduce(Context._merge_config,

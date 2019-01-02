@@ -4,5 +4,5 @@ Description=Interaction Service
 [Service]
 Type=dbus
 User=interaction
-ExecStart=/usr/bin/interactiond
+ExecStart=/usr/bin/interactiond --system
 BusName=com.github.radium226.Interaction
