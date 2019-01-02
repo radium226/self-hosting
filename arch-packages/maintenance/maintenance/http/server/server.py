@@ -2,6 +2,7 @@
 
 from maintenance.dbus.client import MaintainerDBusClient
 import cherrypy
+from threading import Thread
 
 class RootController(object):
 
@@ -12,7 +13,10 @@ class RootController(object):
     @cherrypy.expose
     def deploy(self, application_name, token):
         if token == self.token:
-            self.client.deploy(application_name)
+            def thread_target():
+                self.client.deploy(application_name)
+            thread = Thread(target=thread_target)
+            thread.start()
             cherrypy.response.status = "202 Accepted"
             return None
         else:
