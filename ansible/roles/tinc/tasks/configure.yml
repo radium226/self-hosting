@@ -1,0 +1,76 @@
+---
+- name: install packages
+  yay:
+   name: "tinc-pre"
+   state: present
+
+- name: create directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+  - "/etc/tinc"
+  - "/etc/tinc/{{ tinc_vpn_name }}"
+  - "/etc/tinc/{{ tinc_vpn_name }}/hosts"
+  notify:
+  - restart tinc service
+
+- name: create public and private key files
+  shell: |
+    tinc -n "{{ tinc_vpn_name }}" init "{{ tinc_node_name }}"
+    tinc -n "{{ tinc_vpn_name }}" set "{{ tinc_node_name}}.Address" "{{ tinc_node_address }}"
+  args:
+    creates: /etc/tinc/{{ tinc_vpn_name }}/rsa_key.priv
+  notify:
+  - restart tinc service
+
+- name: create config file
+  template:
+    src: "tinc.conf.j2"
+    dest: "/etc/tinc/{{ tinc_vpn_name }}/tinc.conf"
+
+- name: fetch host files
+  fetch:
+    src: "/etc/tinc/{{ tinc_vpn_name }}/hosts/{{ tinc_node_name }}"
+    dest: '/tmp/self-hosting/tinc/{{ tinc_vpn_name }}/hosts/'
+    flat: yes
+  changed_when: False
+
+- name: copy host files
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/tinc/{{ tinc_vpn_name }}/hosts/"
+  with_fileglob: '/tmp/self-hosting/tinc/{{ tinc_vpn_name }}/hosts/*'
+  notify:
+  - restart tinc service
+
+- name: copy tinc-up file
+  copy:
+    src: "tinc-up"
+    dest: "/etc/tinc/{{ tinc_vpn_name }}/tinc-up"
+    mode: u=xwr,g=,o=
+  notify:
+  - restart tinc service
+
+- name: copy tinc-down file
+  copy:
+    src: "tinc-down"
+    dest: "/etc/tinc/{{ tinc_vpn_name }}/tinc-down"
+    mode: u=xwr,g=,o=
+
+- name: load tun module
+  copy:
+    content: |
+      tun
+    dest: "/etc/modules-load.d/tun.conf"
+  notify:
+  - restart systemd-modules-load service
+
+- name: enable systemd service
+  systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  loop:
+  - "tinc@{{ tinc_vpn_name }}"
+  - "tinc"

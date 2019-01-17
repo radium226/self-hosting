@@ -32,7 +32,7 @@ define ansible
 			$(1) \
 			$(ANSIBLE_VERBOSE) \
 			-m "$(2)" \
-			-a $(3) \
+			$(shell test -z "$(3)" && echo -ne "" || echo -ne "-a $(3)" ) \
 			-i "./ansible/inventory.ini" \
 				--vault-password-file="./ansible/.vault-password" \
 				-e "ansible_ssh_user='$(ANSIBLE_SSH_USER)'"

@@ -1,0 +1,4 @@
+Name = {{ inventory_hostname | replace('-', '_') }}
+Mode = switch
+AddressFamily = ipv4
+Interface = {{ tinc_vpn_iface_name }}

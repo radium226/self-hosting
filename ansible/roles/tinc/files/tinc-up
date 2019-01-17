@@ -1,0 +1,4 @@
+#!/bin/sh
+
+ip link set "${INTERFACE}" up
+avahi-autoipd --daemonize --wait "${INTERFACE}"

@@ -20,3 +20,6 @@
   - include: "./bootstrap/yay.yml"
     tags:
     - "yay"
+  - include: "./bootstrap/hostname.yml"
+    tags:
+    - "hostname"

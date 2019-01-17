@@ -45,7 +45,7 @@ ansible-vault-edit:
 			"./group_vars/all/vault.yml"
 
 define knock
-	$(call ansible-local-shell,all,"knock -d 1000 {{ knockd_host_name }} {{ $(1)_knockd_sequence | replace(',', ' ') }}")
+	$(call ansible-local-shell,all,"knock -d 1000 {{ external_host_name }} {{ $(1)_knockd_sequence | replace(',', ' ') }}")
 endef
 
 define open-ssh-port
@@ -64,3 +64,8 @@ open-ssh-port:
 .PHONY: copy-to
 copy-to:
 	$(call ansible,$(GROUP),copy,'src="$(SRC)" dest="$(DEST)"')
+
+
+.PHONY: ansible-playbook
+ansible-playbook:
+	$(call ansible-playbook,$(PLAYBOOK),$(ANSIBLE_SSH_USER),)

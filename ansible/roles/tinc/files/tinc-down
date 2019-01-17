@@ -1,0 +1,4 @@
+#!/bin/sh
+
+avahi-autoipd --kill "${INTERFACE}"
+ip link set "${INTERFACE}" down

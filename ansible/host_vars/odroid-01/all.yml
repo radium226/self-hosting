@@ -1,4 +1,6 @@
 ---
+avahi_iptables: True # Required for Pulse Audio
+
 pulseaudio_iface_name: "{{ external_iface_name }}"
 pulseaudio_cards:
 - name: "alsa_card.usb-C-Media_Electronics_Inc._USB_Audio_Device-00"

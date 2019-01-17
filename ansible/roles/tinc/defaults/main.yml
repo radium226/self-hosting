@@ -1,0 +1,9 @@
+---
+tinc_node_name: "{{ inventory_hostname | replace('-', '_') }}"
+tinc_node_address: "{{ external_host_name }}"
+
+tinc_vpn_name: "vpn"
+tinc_vpn_iface_name: "tun0"
+
+tinc_iface_name: "{{ external_iface_name }}"
+tinc_port: "655"

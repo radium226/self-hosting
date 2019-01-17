@@ -1,0 +1,6 @@
+---
+- include: "configure.yml"
+  when: "avahi_configure | bool"
+
+- include: "iptables.yml"
+  when: "avahi_iptables | bool"

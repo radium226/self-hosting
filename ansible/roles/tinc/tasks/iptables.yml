@@ -1,0 +1,17 @@
+---
+- name: add iptables rules
+  copy:
+    content: |
+      -A INPUT -i {{ tinc_vpn_iface_name }} -j ACCEPT
+
+      -A INPUT -i {{ tinc_iface_name }} -p tcp --sport {{ tinc_port }} -j ACCEPT
+      -A INPUT -i {{ tinc_iface_name }} -p tcp --dport {{ tinc_port }} -j ACCEPT
+      -A OUTPUT -p tcp --sport {{ tinc_port }} -j ACCEPT
+      -A OUTPUT -p tcp --dport {{ tinc_port }} -j ACCEPT
+
+      -A INPUT -i {{ tinc_iface_name }} -p udp --sport {{ tinc_port }} -j ACCEPT
+      -A INPUT -i {{ tinc_iface_name }} -p udp --dport {{ tinc_port }} -j ACCEPT
+      -A OUTPUT -p udp --sport {{ tinc_port }} -j ACCEPT
+      -A OUTPUT -p udp --dport {{ tinc_port }} -j ACCEPT
+    dest: "/etc/iptables/iptables.rules.d/10-tinc.rules"
+  notify: restart iptables service

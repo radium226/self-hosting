@@ -9,3 +9,6 @@
   - include: "provision/hardening.yml"
     tags:
     - "hardening"
+  - include: "provision/private-network.yml"
+    tags:
+    - "private-network"

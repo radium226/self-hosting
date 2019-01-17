@@ -1,0 +1,7 @@
+---
+- name: add iptables rules
+  copy:
+    content: |
+      -A INPUT -i {{ avahi_iface_name }} -p udp --dport {{ avahi_port }} -j ACCEPT
+    dest: "/etc/iptables/iptables.rules.d/10-avahi.rules"
+  notify: restart iptables service

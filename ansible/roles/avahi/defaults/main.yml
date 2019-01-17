@@ -1,0 +1,6 @@
+---
+avahi_configure: True
+avahi_iptables: False
+
+avahi_iface_name: "{{ external_iface_name }}"
+avahi_port: 5353

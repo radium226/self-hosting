@@ -1,0 +1,9 @@
+- name: restart tinc service
+  systemd:
+    name: "tinc@{{ tinc_vpn_name }}.service"
+    state: restarted
+
+- name: restart systemd-modules-load service
+  systemd:
+    name: "systemd-modules-load"
+    state: restarted

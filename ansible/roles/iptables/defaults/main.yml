@@ -1,0 +1,2 @@
+---
+iptables_iface_name: "{{ external_iface_name }}"
