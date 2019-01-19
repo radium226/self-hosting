@@ -11,7 +11,7 @@
       Description=Data Mount
 
       [Mount]
-      What=odroid-01.local:/srv/nfs4/DATA
+      What=storage.local:/srv/nfs4/DATA
       Where=/mnt/DATA
       Type=nfs
       Options=soft
