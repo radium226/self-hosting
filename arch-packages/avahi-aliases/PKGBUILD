@@ -1,0 +1,45 @@
+pkgname="${NAME}"
+pkgver="${VERSION}"
+pkgrel="1"
+arch=("any")
+
+prepare()
+{
+  :
+}
+
+depends=(
+  "python-toml"
+  #FIXME "python-deepmerge"
+  "python-gobject"
+  "python-pydbus"
+)
+
+
+source=(
+  "${pkgname%-git}-${pkgver}.tar.gz"
+  "usr_lib_systemd_system_avahi-aliases.service"
+  "usr_lib_systemd_system_avahi-alias@.service"
+)
+
+backup=(
+  "etc/maintenance/config.toml"
+)
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  python ./setup.py build
+}
+
+package() {
+  cd "${srcdir}/${pkgname%-git}-${pkgver}"
+  python setup.py install --root="${pkgdir}/" --optimize=1 --skip-build
+
+  install -Dm0644 \
+    "${startdir}/usr_lib_systemd_system_avahi-aliases.service" \
+    "${pkgdir}/usr/lib/systemd/system/avahi-aliases.service"
+
+  install -Dm0644 \
+    "${startdir}/usr_lib_systemd_system_avahi-alias@.service" \
+    "${pkgdir}/usr/lib/systemd/system/avahi-alias@.service"
+}

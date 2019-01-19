@@ -86,3 +86,9 @@
       /srv/nfs4/DATA *(rw,no_subtree_check,no_root_squash)
     dest: "/etc/exports.d/DATA.exports"
   notify: export NFS file systems
+
+- name: set Avahi alias
+  systemd:
+    name: "avahi-alias@storage.service"
+    enabled: yes
+    state: started

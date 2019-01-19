@@ -1,0 +1,14 @@
+---
+- name: build and install
+  include_role:
+    name: "arch-package"
+  vars:
+    arch_package_name: "avahi-aliases"
+
+- name: enable systemd service
+  systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  loop:
+  - "avahi-aliases.service"

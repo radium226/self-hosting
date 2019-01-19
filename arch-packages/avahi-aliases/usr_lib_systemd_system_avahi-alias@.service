@@ -1,0 +1,12 @@
+[Unit]
+Description=Avahi Alias %i
+PartOf=avahi-aliases.service
+ReloadPropagatedFrom=avahi-aliases.service
+
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/avahi-publish-alias --name="%i"
+Environment=PYTHONUNBUFFERED=1
+[Install]
+WantedBy=avahi-aliases.service
