@@ -1,0 +1,7 @@
+---
+nfs_server_ports:
+- 111
+- 2049
+- 20048
+
+nfs_server_iptables: yes

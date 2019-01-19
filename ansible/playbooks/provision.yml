@@ -12,3 +12,19 @@
   - include: "provision/private-network.yml"
     tags:
     - "private-network"
+
+- hosts: storage-server
+  gather_facts: no
+  become: yes
+  tasks:
+  - include: "provision/storage-server.yml"
+    tags:
+    - "storage"
+
+- hosts: storage-client
+  gather_facts: no
+  become: yes
+  tasks:
+  - include: "provision/storage-client.yml"
+    tags:
+    - "storage"

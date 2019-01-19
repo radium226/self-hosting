@@ -1,0 +1,88 @@
+---
+- name: install packages
+  yay:
+    name: "btrfs-progs"
+    state: present
+
+- name: create disk mount for systemd
+  copy:
+    content: |
+      [Unit]
+      Description=Data Mount
+
+      [Mount]
+      What=/dev/disk/by-label/DATA
+      Where=/mnt/DATA
+      Type=btrfs
+      TimeoutSec=10s
+
+      [Install]
+      WantedBy=multi-user.target
+    dest: "/etc/systemd/system/mnt-DATA.mount"
+  notify: reload systemd daemon
+
+- name: create disk autoumount for systemd
+  copy:
+    content: |
+      [Unit]
+      Description=Data Automount Point
+
+      [Automount]
+      Where=/mnt/DATA
+      TimeoutIdleSec=1min
+
+      [Install]
+      WantedBy=multi-user.target
+    dest: "/etc/systemd/system/mnt-DATA.automount"
+  notify: reload systemd daemon
+
+- name: start systemd automount for disks
+  systemd:
+    name: "mnt-DATA.automount"
+    state: started
+    enabled: yes
+
+- name: create NFS mount for systemd
+  copy:
+    content: |
+      [Unit]
+      Description=Data Mount for NFS
+
+      [Mount]
+      What=/mnt/DATA
+      Where=/srv/nfs4/DATA
+      Type=none
+      Options=bind
+
+      [Install]
+      WantedBy=multi-user.target
+    dest: "/etc/systemd/system/srv-nfs4-DATA.mount"
+  notify: reload systemd daemon
+
+- name: create NFS automount for systemd
+  copy:
+    content: |
+      [Unit]
+      Description=Data Automount Point for NFS
+
+      [Automount]
+      Where=/srv/nfs4/DATA
+      TimeoutIdleSec=2min
+
+      [Install]
+      WantedBy=multi-user.target
+    dest: "/etc/systemd/system/srv-nfs4-DATA.automount"
+  notify: reload systemd daemon
+
+- name: start NFS automount for systemd
+  systemd:
+    name: "srv-nfs4-DATA.automount"
+    state: started
+    enabled: yes
+
+- name: configure NFS exports
+  copy:
+    content: |
+      /srv/nfs4/DATA *(rw,no_subtree_check,no_root_squash)
+    dest: "/etc/exports.d/DATA.exports"
+  notify: export NFS file systems

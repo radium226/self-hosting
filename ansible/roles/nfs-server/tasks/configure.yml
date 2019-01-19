@@ -1,0 +1,11 @@
+---
+- name: install NFS packages
+  yay:
+    name: "nfs-utils"
+    state: present
+
+- name: start NFS server
+  systemd:
+    name: "nfs-server.service"
+    state: started
+    enabled: yes

@@ -1,0 +1,44 @@
+---
+- name: create DATA folder
+  file:
+    path: "/mnt/DATA"
+    state: directory
+
+- name: create disk mount for systemd
+  copy:
+    content: |
+      [Unit]
+      Description=Data Mount
+
+      [Mount]
+      What=odroid-01.local:/srv/nfs4/DATA
+      Where=/mnt/DATA
+      Type=nfs
+      Options=soft
+      TimeoutSec=10s
+
+      [Install]
+      WantedBy=multi-user.target
+    dest: "/etc/systemd/system/mnt-DATA.mount"
+  notify: reload systemd daemon
+
+- name: create disk autoumount for systemd
+  copy:
+    content: |
+      [Unit]
+      Description=Data Automount Point
+
+      [Automount]
+      Where=/mnt/DATA
+      TimeoutIdleSec=1min
+
+      [Install]
+      WantedBy=multi-user.target
+    dest: "/etc/systemd/system/mnt-DATA.automount"
+  notify: reload systemd daemon
+
+- name: start systemd automount for disks
+  systemd:
+    name: "mnt-DATA.automount"
+    state: started
+    enabled: yes
