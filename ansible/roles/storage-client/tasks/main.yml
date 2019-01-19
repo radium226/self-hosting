@@ -1,7 +1,25 @@
 ---
-- name: create DATA folder
+- name: create /etc/sysusers.d folder
   file:
-    path: "/mnt/DATA"
+    path: "/etc/sysusers.d"
+    state: directory
+
+- name: setup user for systemd
+  copy:
+    content: |
+      u "{{ storage_client_user }}" {{ storage_client_uid }} "Storage User"
+      g "{{ storage_client_user }}" {{ storage_client_uid }}
+    dest: "/etc/sysusers.d/storage.conf"
+  register: setup_user_for_systemd
+
+- name: create user with systemd
+  command: |
+    systemd-sysusers
+  when: setup_user_for_systemd.changed
+
+- name: create STORAGE folder
+  file:
+    path: "/mnt/STORAGE"
     state: directory
 
 - name: create disk mount for systemd
@@ -14,7 +32,7 @@
       What=storage.local:/srv/nfs4/DATA
       Where=/mnt/DATA
       Type=nfs
-      Options=soft
+      Options=user,soft
       TimeoutSec=10s
 
       [Install]

@@ -4,6 +4,19 @@
     name: "btrfs-progs"
     state: present
 
+- name: setup user for systemd
+  copy:
+    content: |
+      u "{{ storage_server_user }}" {{ storage_server_uid }} "Storage User"
+      g "{{ storage_server_user }}" {{ storage_server_uid }}
+    dest: "/etc/sysusers.d/storage.conf"
+  register: setup_user_for_systemd
+
+- name: create user with systemd
+  command: |
+    systemd-sysusers
+  when: setup_user_for_systemd.changed
+
 - name: create disk mount for systemd
   copy:
     content: |
@@ -83,7 +96,7 @@
 - name: configure NFS exports
   copy:
     content: |
-      /srv/nfs4/DATA *(rw,no_subtree_check,no_root_squash)
+      /srv/nfs4/DATA *(sync,rw,all_squash,anonuid={{ storage_server_uid }},anongid={{ storage_server_uid }},no_subtree_check)
     dest: "/etc/exports.d/DATA.exports"
   notify: export NFS file systems
 

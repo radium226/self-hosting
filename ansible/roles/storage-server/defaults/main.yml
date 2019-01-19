@@ -1,2 +1,4 @@
 ---
 storage_server_iface_name: "{{ external_iface_name }}"
+storage_server_user: "storage"
+storage_server_uid: "1500"
