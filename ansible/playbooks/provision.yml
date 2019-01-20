@@ -28,3 +28,13 @@
   - include: "provision/storage-client.yml"
     tags:
     - "storage"
+
+- hosts: scanner-server
+  gather_facts: no
+  become: yes
+  roles:
+  - role: "scanner"
+    vars:
+      scanner_mode: "server"
+    tags:
+    - "scanner"

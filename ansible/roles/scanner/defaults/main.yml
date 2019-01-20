@@ -1,0 +1,4 @@
+---
+scanner_server_iface_name: "{{ external_iface_name }}"
+scanner_server_port: 6566
+scanner_iptables: yes

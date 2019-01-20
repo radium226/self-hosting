@@ -1,0 +1,23 @@
+---
+- name: install packages
+  yay:
+    name: "sane"
+    state: present
+
+- name: configure
+  copy:
+    content: |
+      0.0.0.0/0
+    dest: "/etc/sane.d/saned.conf"
+
+- name: start service
+  systemd:
+    name: "saned.socket"
+    state: started
+    enabled: yes
+
+- name: set Avahi alias
+  systemd:
+    name: "avahi-alias@scanner.service"
+    enabled: yes
+    state: started

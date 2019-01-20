@@ -1,0 +1,8 @@
+---
+- name: add iptables rules
+  copy:
+    content: |
+      -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+      -A INPUT -i {{ scanner_server_iface_name }} -p tcp --dport {{ scanner_server_port }} -j ACCEPT
+    dest: "/etc/iptables/iptables.rules.d/10-sane.rules"
+  notify: restart iptables service
