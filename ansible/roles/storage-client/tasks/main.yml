@@ -22,6 +22,14 @@
     path: "/mnt/STORAGE"
     state: directory
 
+- name: load nfs module
+  copy:
+    content: |
+      nfs
+    dest: "/etc/modules-load.d/nfs.conf"
+  notify:
+  - restart systemd-modules-load service
+
 - name: create disk mount for systemd
   copy:
     content: |
