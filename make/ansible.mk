@@ -14,6 +14,19 @@ define ansible-playbook
 				--limit="$(shell if [[ -z "$(4)" ]] || [[ "$(4)" == "none" ]]; then echo "all"; else echo "$(4)"; fi )" #FIXME: "none" is bad
 endef
 
+define ansible-local-playbook
+	ANSIBLE_CONFIG="./ansible/ansible.cfg" \
+		ansible-playbook \
+			$(ANSIBLE_VERBOSE) \
+			-i "./ansible/inventory.ini" \
+			"./ansible/playbooks/$(1)" \
+				--connection="local" \
+				$(shell if [[ -z "$(3)" ]]; then echo ""; else echo "--tags=$(2)"; fi ) \
+				--vault-password-file="./ansible/.vault-password" \
+				--extra-vars="system_maintenance='no'" \
+				--limit="$(shell if [[ -z "$(3)" ]] || [[ "$(3)" == "none" ]]; then echo "all"; else echo "$(3)"; fi )" #FIXME: "none" is bad
+endef
+
 define ansible-local-shell
 	ANSIBLE_CONFIG="./ansible/ansible.cfg" \
 		ansible \

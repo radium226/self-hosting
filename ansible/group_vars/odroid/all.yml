@@ -1,1 +1,2 @@
 bootstrap_pacman_mirror: "http://mirror.archlinuxarm.org/$arch/$repo"
+tinc_node_address: "{{ external_host_name }}"

@@ -18,7 +18,9 @@
 - name: create public and private key files
   shell: |
     tinc -n "{{ tinc_vpn_name }}" init "{{ tinc_node_name }}"
-    tinc -n "{{ tinc_vpn_name }}" set "{{ tinc_node_name}}.Address" "{{ tinc_node_address }}"
+    {% if tinc_node_address is defined %}
+      tinc -n "{{ tinc_vpn_name }}" set "{{ tinc_node_name}}.Address" "{{ tinc_node_address }}"
+    {% endif %}
   args:
     creates: /etc/tinc/{{ tinc_vpn_name }}/rsa_key.priv
   notify:
@@ -45,8 +47,8 @@
   - restart tinc service
 
 - name: copy tinc-up file
-  copy:
-    src: "tinc-up"
+  template:
+    src: "tinc-up.j2"
     dest: "/etc/tinc/{{ tinc_vpn_name }}/tinc-up"
     mode: u=xwr,g=,o=
   notify:
@@ -57,6 +59,12 @@
     src: "tinc-down"
     dest: "/etc/tinc/{{ tinc_vpn_name }}/tinc-down"
     mode: u=xwr,g=,o=
+
+- name: copy tinc-redirect file
+  template:
+    src: "tinc-redirect.j2"
+    dest: "/usr/local/bin/tinc-redirect"
+    mode: u=xwr,g=xr,o=x
 
 - name: load tun module
   copy:

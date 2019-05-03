@@ -43,7 +43,7 @@
   copy:
     content: |
       -A INPUT -i {{ iptables_iface_name }} -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-    dest: "/etc/iptables/iptables.rules.d/98-existing-connections.rules"
+    dest: "/etc/iptables/iptables.rules.d/80-existing-connections.rules"
   notify: restart iptables service
 - name: add rule to allow ping
   copy:

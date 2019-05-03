@@ -45,7 +45,7 @@ ansible-vault-edit:
 			"./group_vars/all/vault.yml"
 
 define knock
-	$(call ansible-local-shell,all,"knock -d 1000 {{ external_host_name }} {{ $(1)_knockd_sequence | replace(',', ' ') }}")
+	$(call ansible-local-shell,all,"{% if external_host_name is defined %} knock -d 1000 {{ external_host_name }} {{ $(1)_knockd_sequence | replace(',', ' ') }} {% else %} true {% endif %}")
 endef
 
 define open-ssh-port

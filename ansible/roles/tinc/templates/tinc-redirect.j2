@@ -1,0 +1,191 @@
+#!/bin/bash
+
+set -euo "pipefail"
+
+export NETNS_NAME="{{ tinc_vpn_name }}"
+export VPN_IFACE_NAME="{{ tinc_vpn_iface_name }}"
+export EXTERNAL_IFACE_NAME="{{ external_iface_name }}"
+
+export TABLE_NUMBER="10"
+export MARK_NUMBER="11"
+
+export DNS_IP="8.8.8.8"
+export SUBNET_NUMBER=42
+
+
+export COLOR_BLUE="\e[34m"
+export COLOR_RED="\e[31m"
+export COLOR_GREEN="\e[32m"
+export COLOR_DEFAULT="\e[39m"
+export COLOR_GREY="\e[90m"
+
+info()
+{
+  echo -e "${COLOR_BLUE}${@}${COLOR_DEFAULT}" >&2
+}
+
+debug()
+{
+  echo -e "${COLOR_GREY}${@}${COLOR_DEFAULT}" >&2
+}
+
+node_name()
+{
+  declare host_name="${1}"
+  echo "${host_name%.local}" | tr "-" "_"
+}
+
+node_external_ip()
+{
+  declare host_name="${1}"
+  declare node_name="$( node_name "${host_name}" )"
+  tinc --net="{{ tinc_vpn_name }}" info "${node_name}" | grep "Address:" | tr -s " " | cut -d":" -f2 | cut -d" " -f2
+}
+
+set_up()
+{
+  declare host_name="${1}"
+  debug "host_name=${host_name}"
+
+  declare vpn_gateway_ip="$( avahi-resolve -4 -n "${host_name}" | cut -d"	" -f2 )"
+  debug "vpn_gateway_ip=${vpn_gateway_ip}"
+
+  declare vpn_ip="$( ip -4 addr show dev "${VPN_IFACE_NAME}" | grep "inet" | cut -d" " -f6 | cut -d"/" -f1 )"
+  debug "vpn_ip=${vpn_ip}"
+
+  trap "tear_down '${vpn_ip}'" EXIT
+
+  # We allow IP forwarding
+  sysctl \
+    --quiet \
+    --write "net.ipv4.ip_forward=1"
+
+  # We create the table
+  info "Creating default route for ${TABLE_NUMBER} table"
+  ip route add default via "${vpn_gateway_ip}" dev "${VPN_IFACE_NAME}" src "${vpn_ip}" table "${TABLE_NUMBER}"
+
+  # We create the network namespace
+  info "Creating ${NETNS_NAME} network namespace"
+  ip netns add "${NETNS_NAME}"
+  ip netns exec "${NETNS_NAME}" ip address add "127.0.0.1/8" dev "lo"
+  ip netns exec "${NETNS_NAME}" ip link set "lo" up
+
+  # We define the DNS server
+  info "Setting up ${DNS_IP} DNS in ${NETNS_NAME} network namespace"
+  ip netns exec "${NETNS_NAME}" sh -c "echo nameserver ${DNS_IP} >'/etc/resolv.conf'"
+
+  # We create the virtual interface
+  info "Creating virtual interfaces ${NETNS_NAME}0 and main0"
+  ip link add dev "main0" type veth peer name "${NETNS_NAME}0"
+  ip link set "${NETNS_NAME}0" netns "${NETNS_NAME}"
+  ip link set "main0" up
+  ip netns exec "${NETNS_NAME}" ip link set "${NETNS_NAME}0" up
+
+  # We set the IP addresses and the gateway
+  info "Setting up default route and gateway in ${NETNS_NAME} network namespace"
+  ip address add "10.10.${SUBNET_NUMBER}.10/31" dev "main0"
+  ip netns exec "${NETNS_NAME}" ip address add "10.10.${SUBNET_NUMBER}.11/31" dev "${NETNS_NAME}0"
+  ip netns exec "${NETNS_NAME}" ip route add default via "10.10.${SUBNET_NUMBER}.10"
+
+  # We use the table for everything in the subnet
+  info "Using ${TABLE_NUMBER} table to connect to ${NETNS_NAME} network namespace subnet"
+  ip rule add from "10.10.${SUBNET_NUMBER}.11/31" table "${TABLE_NUMBER}"
+
+  # We mark all the trafic leaving the VPN interface
+  info "Marking with ${MARK_NUMBER} mark all trafic comming out of ${NETNS_NAME} network namespace subnet"
+  iptables \
+    --table "nat" \
+    --append "PREROUTING" \
+    --source "10.10.${SUBNET_NUMBER}.11/31" \
+    --jump "MARK" \
+    --set-mark "${MARK_NUMBER}"
+
+  # We link the table and the mark and we rewrite manually the source IP
+  info "Linking ${TABLE_NUMBER} table and ${MARK_NUMBER} mark"
+  ip rule add fwmark "${MARK_NUMBER}" priority "100" table "${TABLE_NUMBER}"
+  iptables \
+    --table "nat" \
+    --append "POSTROUTING" \
+    --out-interface "${VPN_IFACE_NAME}" \
+    --match "mark" --mark "${MARK_NUMBER}" \
+    --jump "SNAT" \
+    --to-source "${vpn_ip}"
+
+  info "Setting up policies for main0"
+  iptables --append "INPUT" --in-interface "main0" --jump "ACCEPT"
+  iptables --append "OUTPUT" --out-interface "main0" --jump "ACCEPT"
+  iptables --append "FORWARD" --in-interface "main0" --out-interface "${VPN_IFACE_NAME}" --jump "ACCEPT"
+  iptables --append "FORWARD" --in-interface "${VPN_IFACE_NAME}" --out-interface "main0" --jump "ACCEPT"
+
+
+}
+
+tear_down()
+{
+  declare vpn_ip="${1}"
+
+  set +e
+  debug "Deleting ${NETNS_NAME} network namespace"
+  ip netns del "${NETNS_NAME}" || true
+  debug "Flushing ${TABLE_NUMBER} table"
+  ip route flush table "${TABLE_NUMBER}"
+  debug "Deleting IP rules"
+  ip rule del from all fwmark "${MARK_NUMBER}" lookup "${TABLE_NUMBER}"
+  ip rule del from "10.10.${SUBNET_NUMBER}.11/31" table "${TABLE_NUMBER}"
+  debug "Deleting NAT table"
+  iptables \
+    --table "nat" \
+    --delete "PREROUTING" \
+    --source "10.10.${SUBNET_NUMBER}.11/31" \
+    --jump "MARK" \
+    --set-mark "${MARK_NUMBER}"
+  iptables \
+    --table "nat" \
+    --delete "POSTROUTING" \
+    --out-interface "${VPN_IFACE_NAME}" \
+    --match "mark" --mark "${MARK_NUMBER}" \
+    --jump "SNAT" \
+    --to-source "${vpn_ip}"
+  debug "Delete defautl policies for main0"
+  iptables --delete "INPUT" --in-interface "main0" --jump "ACCEPT"
+  iptables --delete "OUTPUT" --out-interface "main0" --jump "ACCEPT"
+  iptables --delete "FORWARD" --in-interface "main0" --out-interface "${VPN_IFACE_NAME}" --jump "ACCEPT"
+  iptables --delete "FORWARD" --in-interface "${VPN_IFACE_NAME}" --out-interface "main0" --jump "ACCEPT"
+
+  set -e
+}
+
+main()
+{
+  declare arguments="$( getopt -o "t:" -l "through:" -- "$@" )"
+  eval set -- "${arguments}"
+
+  declare host_name=
+  while true; do
+    case "${1}" in
+        -t|--through)
+              host_name="${2}"
+              shift 2
+            ;;
+        --)
+              shift
+              break
+            ;;
+        *)
+              echo "Wrong arguments! " >&2
+              exit 1
+            ;;
+    esac
+  done
+
+  if [[ -z "${host_name}" ]]; then
+    echo "The host is not defined! " >&2
+    exit 1
+  fi
+
+  set_up "${host_name}"
+  ip netns exec "${NETNS_NAME}" "${@}"
+}
+
+main "${@}"
+exit 0

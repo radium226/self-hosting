@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -euo pipefail
+
+ip link set "${INTERFACE}" up
+avahi-autoipd --daemonize --wait "${INTERFACE}"
+
+sysctl -w "net.ipv4.ip_forward=1"
+
+iptables --append "INPUT" --in-interface "${INTERFACE}" --jump "ACCEPT"
+iptables --append "OUTPUT" --out-interface "${INTERFACE}" --jump "ACCEPT"
+
+iptables --append "FORWARD" --in-interface "${INTERFACE}" --jump "ACCEPT"
+iptables --append "FORWARD" --in-interface "${INTERFACE}" --out-interface "{{ external_iface_name }}" --match "state" --state "RELATED,ESTABLISHED" --jump "ACCEPT"
+iptables --append "FORWARD" --in-interface "{{ external_iface_name }}" --out-interface "${INTERFACE}" --match "state" --state "RELATED,ESTABLISHED" --jump "ACCEPT"
+iptables --table "nat" --append "POSTROUTING" --source "169.254.0.0/16" --out-interface "{{ external_iface_name }}" --jump "MASQUERADE"
+iptables --append "OUTPUT" --out-interface "${INTERFACE}" --jump "ACCEPT"

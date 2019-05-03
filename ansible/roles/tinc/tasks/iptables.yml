@@ -3,6 +3,12 @@
   copy:
     content: |
       -A INPUT -i {{ tinc_vpn_iface_name }} -j ACCEPT
+      -A OUTPUT -o {{ tinc_vpn_iface_name }} -j ACCEPT
+
+      -A FORWARD -i {{ tinc_vpn_iface_name }} -j ACCEPT
+      -A FORWARD -i {{ tinc_vpn_iface_name }} -o {{ external_iface_name }} -j ACCEPT
+      -A FORWARD -i {{ tinc_iface_name }} -o {{ tinc_vpn_iface_name }} -j ACCEPT
+      -A OUTPUT -o {{ tinc_vpn_iface_name }} -j ACCEPT
 
       -A INPUT -i {{ tinc_iface_name }} -p tcp --sport {{ tinc_port }} -j ACCEPT
       -A INPUT -i {{ tinc_iface_name }} -p tcp --dport {{ tinc_port }} -j ACCEPT
@@ -13,5 +19,13 @@
       -A INPUT -i {{ tinc_iface_name }} -p udp --dport {{ tinc_port }} -j ACCEPT
       -A OUTPUT -p udp --sport {{ tinc_port }} -j ACCEPT
       -A OUTPUT -p udp --dport {{ tinc_port }} -j ACCEPT
-    dest: "/etc/iptables/iptables.rules.d/10-tinc.rules"
+      COMMIT
+
+      *nat
+      :PREROUTING ACCEPT [0:0]
+      :INPUT ACCEPT [0:0]
+      :OUTPUT ACCEPT [0:0]
+      :POSTROUTING ACCEPT [0:0]
+      -A POSTROUTING --source 169.254.0.0/16 -o {{ tinc_iface_name }} -j MASQUERADE
+    dest: "/etc/iptables/iptables.rules.d/90-tinc.rules"
   notify: restart iptables service
