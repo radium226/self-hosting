@@ -60,10 +60,6 @@ set_up()
     --quiet \
     --write "net.ipv4.ip_forward=1"
 
-  # We create the table
-  info "Creating default route for ${TABLE_NUMBER} table"
-  ip route add default via "${vpn_gateway_ip}" dev "${VPN_IFACE_NAME}" src "${vpn_ip}" table "${TABLE_NUMBER}"
-
   # We create the network namespace
   info "Creating ${NETNS_NAME} network namespace"
   ip netns add "${NETNS_NAME}"
@@ -86,6 +82,11 @@ set_up()
   ip address add "10.10.${SUBNET_NUMBER}.10/31" dev "main0"
   ip netns exec "${NETNS_NAME}" ip address add "10.10.${SUBNET_NUMBER}.11/31" dev "${NETNS_NAME}0"
   ip netns exec "${NETNS_NAME}" ip route add default via "10.10.${SUBNET_NUMBER}.10"
+
+  # We create the table
+  info "Creating default route for ${TABLE_NUMBER} table"
+  ip route add default via "${vpn_gateway_ip}" dev "${VPN_IFACE_NAME}" src "${vpn_ip}" table "${TABLE_NUMBER}"
+  ip route add "10.10.${SUBNET_NUMBER}.10/31" via "10.10.${SUBNET_NUMBER}.10" dev "main0" src "10.10.${SUBNET_NUMBER}.10"  table "${TABLE_NUMBER}"
 
   # We use the table for everything in the subnet
   info "Using ${TABLE_NUMBER} table to connect to ${NETNS_NAME} network namespace subnet"
