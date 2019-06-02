@@ -71,7 +71,7 @@
     echo "-A INPUT -s ${ip} -j ACCEPT" >>"/etc/iptables/iptables.rules.d/20-$( echo "${ip}" | tr "." "-" ).rules"
     echo "-A OUTPUT -d ${ip} -j ACCEPT" >>"/etc/iptables/iptables.rules.d/20-$( echo "${ip}" | tr "." "-" ).rules"
   when: "not ( system_maintenance | bool )"
-  - name: start service
+- name: start service
   systemd:
     name: "iptables.service"
     state: started
