@@ -1,5 +1,5 @@
-include ./make/ansible.mk
-include ./make/ssh.mk
+include make/ansible.mk
+include make/ssh.mk
 
 GROUP = none
 include ./make/groups/$(GROUP).mk
@@ -32,7 +32,7 @@ provision: #ansible-galaxy-install-requirements
 APPLICATION =
 
 .PHONY: deploy
-deploy: #ansible-galaxy-install-requirements
+deploy: ansible-galaxy-install-requirements
 	$(call ansible-playbook,deploy.yml,$(ANSIBLE_SSH_USER),$(APPLICATION),$(GROUP))
 
 .PHONY: ansible-vault-edit
@@ -69,3 +69,8 @@ copy-to:
 .PHONY: ansible-playbook
 ansible-playbook:
 	$(call ansible-playbook,$(PLAYBOOK),$(ANSIBLE_SSH_USER),)
+
+.PHONY: clean
+clean:
+	cd "ansible/galaxy-roles" && \
+	ls -1 | xargs -I {} rm -Rf "{}"

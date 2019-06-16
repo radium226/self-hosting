@@ -3,7 +3,12 @@
 #  version: ansible-role
 #  name: encheres-publiques
 
-- src: "git@gitlab.com:self-hosting/scraping.git"
+#- src: "git@gitlab.com:self-hosting/scraping.git"
+#  scm: git
+#  version: ansible-role
+#  name: scraping
+
+- src: "git@github.com:radium226/forge.git"
   scm: git
   version: ansible-role
-  name: scraping
+  name: forge

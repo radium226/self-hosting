@@ -19,3 +19,11 @@ maintenance_http_token: "{{ vault_maintenance_http_token }}"
 maintenance_git_repo_url: "https://github.com/radium226/self-hosting.git"
 maintenance_http_port: 8080
 maintenance_iface_name: "{{ external_iface_name }}"
+
+ovh_application_key: "{{ vault_ovh_application_key }}"
+ovh_application_secret: "{{ vault_ovh_application_secret }}"
+ovh_consumer_key: "{{ vault_ovh_consumer_key }}"
+
+forge_password: "{{ vault_forge_password }}"
+
+domain: "rouages.xyz"

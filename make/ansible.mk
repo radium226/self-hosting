@@ -1,5 +1,5 @@
 ANSIBLE_SSH_USER = ansible
-ANSIBLE_VERBOSE = -vv
+ANSIBLE_VERBOSE = -vvvv
 
 define ansible-playbook
 	ANSIBLE_CONFIG="./ansible/ansible.cfg" \
@@ -59,5 +59,7 @@ define ansible-galaxy-install
 		install \
 		-r "./$(1)" \
 		-p "./$(2)" \
-		--force
+		--force \
+		--force-with-deps \
+		--ignore-errors
 endef
