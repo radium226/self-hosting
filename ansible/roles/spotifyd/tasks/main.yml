@@ -1,0 +1,62 @@
+---
+- name: Installing packages
+  yay:
+    name: "{{ item }}"
+    state: present
+  loop:
+  - "spotifyd-pulseaudio"
+
+- name: Adding tmpfiles for systemd
+  copy:
+    content: |
+      d /var/lib/spotifyd 0755 spotifyd spotifyd -
+    dest: "/etc/tmpfiles.d/spotifyd.conf"
+  notify: Running systemd-tmpfiles
+- name: Adding sysusers for systemd
+  copy:
+    content: |
+      u "spotifyd" - "spotifyd daemon" /var/lib/spotifyd
+    dest: "/etc/sysusers.d/spotifyd.conf"
+  notify: Running systemd-sysusers
+- name: Adding systemd services
+  copy:
+    content: |
+      [Unit]
+      Description=A spotify playing daemon
+      Documentation=https://github.com/Spotifyd/spotifyd
+      Wants=sound.target
+      After=sound.target
+      Wants=network-online.target
+      After=network-online.target
+
+      [Service]
+      ExecStart=/usr/bin/spotifyd --no-daemon --backend="pulseaudio" --config-path="/etc/spotifyd/%I.conf"
+      Restart=always
+      RestartSec=12
+
+      [Install]
+      WantedBy=default.target
+    dest: "/etc/systemd/system/spotifyd@.service"
+  notify: Reloading systemd
+- meta: flush_handlers
+- name: Creating configuration folder
+  file:
+    path: "/etc/spotifyd"
+    state: directory
+    owner: "spotifyd"
+- name: Configuring {{ item.profile }} profile
+  copy:
+    content: |
+      [global]
+      username = {{ item.spotify_user }}
+      password = {{ item.spotify_password }}
+    dest: "/etc/spotifyd/{{ item.profile }}.conf"
+    owner: "spotifyd"
+    mode: "u=rx,g=r,o="
+  loop: "{{ spotifyd_config }}"
+- name: Enabling {{ item.profile }} profile
+  systemd:
+    name: "spotifyd@{{ item.profile }}.service"
+    state: started
+    enabled: yes
+  loop: "{{ spotifyd_config }}"

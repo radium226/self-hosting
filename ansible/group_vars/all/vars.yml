@@ -27,3 +27,5 @@ ovh_consumer_key: "{{ vault_ovh_consumer_key }}"
 forge_password: "{{ vault_forge_password }}"
 
 domain: "rouages.xyz"
+
+spotifyd_config: "{{ vault_spotifyd_config }}"

@@ -36,3 +36,9 @@
 #  - role: "pulseaudio"
 #    tags:
 #    - "pulseaudio"
+
+- hosts: odroid-01
+  gather_facts: no
+  become: yes
+  roles:
+  - role: "spotifyd"

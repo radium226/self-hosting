@@ -1,0 +1,10 @@
+---
+- name: Reloading systemd
+  systemd:
+    daemon_reload: yes
+- name: Running systemd-sysusers
+  command: |
+    /usr/bin/systemd-sysusers
+- name: Running systemd-tmpfiles
+  command: |
+    /usr/bin/systemd-tmpfiles --create
